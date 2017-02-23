@@ -36,5 +36,4 @@ defmodule Couchdb.Connector.Storage do
     |> HTTPoison.delete!
     |> Handler.handle_delete
   end
-
 end
