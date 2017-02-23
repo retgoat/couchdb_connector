@@ -1,0 +1,7 @@
+{
+    "index": {
+        "fields": ["foo"]
+    },
+    "ddoc" : "test_index",
+    "name" : "foo-index"
+}

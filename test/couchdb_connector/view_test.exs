@@ -107,4 +107,30 @@ defmodule Couchdb.Connector.ViewTest do
   test "document_by_key/3: ensure that function exists. document may or may not be found" do
     View.document_by_key TestConfig.database_properties, TestConfig.test_view_key, :ok
   end
+
+  test "create_index/2: ensure that index gets created" do
+    {:ok, code} = File.read("test/resources/views/test_index.json")
+    {:ok, result} = retry_on_error(
+      fn() ->
+        View.create_index(TestConfig.database_properties, code)
+      end)
+    assert String.contains?(result, "\"id\":\"_design/test_index\"")
+  end
+
+  test "find_all/2: ensure that view works as expected" do
+    params = %{
+        selector: %{
+            year: %{"$gt" => 2010}
+        },
+        fields: ["_id", "_rev", "year", "title"],
+        limit: 2,
+        skip: 0
+    }
+    {:ok, json} = retry_on_error(
+      fn() ->
+        View.find_all(TestConfig.database_properties, Poison.encode!(params))
+      end)
+    {:ok, result_map} = Poison.decode json
+    assert result_map["docs"] == []
+  end
 end

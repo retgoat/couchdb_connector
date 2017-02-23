@@ -11,5 +11,9 @@ defmodule Couchdb.Connector.UrlHelperTest do
 
     assert UrlHelper.query_path(url, key, atom) ==
       "http://localhost/view_name?key=\"%21%2A%27%28%29%3B%3A%40%26%3D%2B%24%2C%2F%3F%23%5B%5D\"&stale=ok"
+
+    key = [1, "foo", true]
+    assert UrlHelper.query_path(url, key, atom) ==
+      "http://localhost/view_name?key=%5B1%2C+%22foo%22%2C+true%5D&stale=ok"
   end
 end

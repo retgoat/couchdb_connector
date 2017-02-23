@@ -51,7 +51,7 @@ defmodule Couchdb.ConnectorTest do
     wrong_database_properties = %{TestConfig.database_properties | :database => "non-existing"}
     {:error, %{:headers => _headers, :payload => payload}} =
       Connector.create wrong_database_properties, %{"key" => "value"}, "42"
-    assert payload["reason"] == "no_db_file"
+    assert payload["reason"] == "Database does not exist."
   end
 
   # create with generated uuid

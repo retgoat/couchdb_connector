@@ -30,7 +30,7 @@ defmodule Couchdb.Connector.WriterTest do
     wrong_database_properties = %{TestConfig.database_properties | :database => "non-existing"}
     {:error, body, _headers} = Writer.create wrong_database_properties, "{\"key\": \"value\"}", "42"
     {:ok, body_map} = Poison.decode body
-    assert body_map["reason"] == "no_db_file"
+    assert body_map["reason"] == "Database does not exist."
   end
 
   test "create/3: ensure that given id overrides id contained in document" do

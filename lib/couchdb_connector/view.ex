@@ -108,7 +108,7 @@ defmodule Couchdb.Connector.View do
   def create_index(db_props, code) do
     db_props
     |> UrlHelper.index_url
-    |> HTTPoison.post!(code)
+    |> HTTPoison.post!(code, [{"content-type", "application/json"}])
     |> Handler.handle_put
   end
 
@@ -119,7 +119,7 @@ defmodule Couchdb.Connector.View do
   def find_all(db_props, params) do
     db_props
     |> UrlHelper.find_url
-    |> HTTPoison.post!(params)
+    |> HTTPoison.post!(params, [{"content-type", "application/json"}])
     |> Handler.handle_put
   end
 end

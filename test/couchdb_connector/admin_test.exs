@@ -46,7 +46,7 @@ defmodule Couchdb.Connector.AdminTest do
     {:ok, body} = Admin.destroy_user(Map.merge(TestConfig.database_properties, TestConfig.test_admin), "jan")
     {:ok, body_map} = Poison.decode body
     assert body_map["id"] == "org.couchdb.user:jan"
-    assert String.starts_with?(body_map["rev"], "2-")
+    assert !String.starts_with?(body_map["rev"], "1-")
   end
 
   test "destroy_user/2: should return an error when given non-existing user" do

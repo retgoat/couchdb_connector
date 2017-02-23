@@ -1,6 +1,7 @@
 defmodule Couchdb.Connector.UrlHelper do
 
   @default_db_properties %{user: nil, password: nil}
+  @admin_port 5986
 
   @moduledoc """
   Provides URL helper functions that compose URLs based on given database
@@ -79,11 +80,20 @@ defmodule Couchdb.Connector.UrlHelper do
   end
 
   @doc """
+  Produces the URL to query a view for a specific list key, using the
+  provided staleness setting (either :ok or :update_after).
+  """
+  @spec query_path(String.t, String.t, atom) :: String.t
+  def query_path(view_base_url, key, stale) when is_list(key) do
+    "#{view_base_url}?key=#{URI.encode_www_form(inspect(key))}&stale=#{Atom.to_string(stale)}"
+  end
+
+  @doc """
   Produces the URL to query a view for a specific key, using the provided staleness setting (either :ok or :update_after).
   """
   @spec query_path(String.t, String.t, atom) :: String.t
   def query_path view_base_url, key, stale do
-    "#{view_base_url}?key=#{key}&stale=#{Atom.to_string(stale)}"
+    "#{view_base_url}?key=\"#{URI.encode_www_form(key)}\"&stale=#{Atom.to_string(stale)}"
   end
 
   @doc """
@@ -99,6 +109,7 @@ defmodule Couchdb.Connector.UrlHelper do
   """
   @spec admin_url(Types.db_properties, String.t) :: String.t
   def admin_url db_props, username do
+    db_props = Map.merge(db_props, %{port: @admin_port})
     "#{database_server_url(db_props)}/_config/admins/#{username}"
   end
 
