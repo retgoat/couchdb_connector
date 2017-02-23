@@ -13,6 +13,11 @@ defmodule Couchdb.Connector.View do
       Couchdb.Connector.View.document_by_key(db_props, "design_name", "view_name", "key")
       {:ok, "{\\"total_rows\\":3,\\"offset\\":1,\\"rows\\":[\\r\\n{\\"id\\":\\"5c09dbf93fd...\\", ...}
 
+      index_code = File.read!("my_index.json")
+      Couchdb.Connector.View.create_index db_props, "my_index", index_code
+
+      Couchdb.Connector.View.find_all(db_props, params)
+      {:ok, "{\\"total_rows\\":3,\\"offset\\":1,\\"rows\\":[\\r\\n{\\"id\\":\\"5c09dbf93fd...\\", ...}
   """
 
   alias Couchdb.Connector.Types
@@ -94,5 +99,27 @@ defmodule Couchdb.Connector.View do
     url
     |> HTTPoison.get!
     |> Handler.handle_get
+  end
+
+  @doc """
+  Create an index with the given JavaScript code.
+  """
+  @spec create_index(Types.db_properties, String.t) :: {:ok, String.t} | {:error, String.t}
+  def create_index(db_props, code) do
+    db_props
+    |> UrlHelper.index_url
+    |> HTTPoison.post!(code)
+    |> Handler.handle_put
+  end
+
+  @doc """
+  Returns everything found for the given view in the given design document.
+  """
+  @spec find_all(Types.db_properties, String.t) :: {:ok, String.t} | {:error, String.t}
+  def find_all(db_props, params) do
+    db_props
+    |> UrlHelper.find_url
+    |> HTTPoison.post!(params)
+    |> Handler.handle_put
   end
 end

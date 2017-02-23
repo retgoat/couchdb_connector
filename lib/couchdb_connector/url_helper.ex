@@ -118,4 +118,20 @@ defmodule Couchdb.Connector.UrlHelper do
   def security_url db_props do
     "#{database_url(db_props)}/_security"
   end
+
+  @doc """
+  Produces the URL to the database's index object.
+  """
+  @spec index_url(Types.db_properties) :: String.t
+  def index_url db_props do
+    "#{database_url(db_props)}/_index"
+  end
+
+  @doc """
+  Produces the URL to find document.
+  """
+  @spec find_url(Types.db_properties) :: String.t
+  def find_url db_props do
+    "#{database_url(db_props)}/_find"
+  end
 end
