@@ -28,9 +28,9 @@ defmodule Couchdb.Connector.Reader do
   Retrieve the document given by database properties and id.
   """
   @spec get(Types.db_properties, String.t) :: {:ok, String.t} | {:error, String.t}
-  def get(db_props, id) do
+  def get(db_props, id, rev \\ nil, revs \\ false) do
     db_props
-    |> UrlHelper.document_url(id)
+    |> UrlHelper.document_url(id, rev, revs)
     |> do_get
   end
 
