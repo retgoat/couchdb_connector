@@ -15,25 +15,35 @@ defmodule Couchdb.Connector do
   alias Couchdb.Connector.Writer
 
   @doc """
-  Retrieve the document given by database properties and id, returning it
+  Retrieve the document with all revs given by database properties, id, and specific rev, returning it
   as a Map.
   """
-  @spec get(Types.db_properties, String.t) :: {:ok, map} | {:error, map}
-  def get(db_props, id) do
+  @spec get(Types.db_properties, String.t, String.t, Boolean.t ) :: {:ok, map} | {:error, map}
+  def get(db_props, id, rev, revs) do
     db_props
-    |> Reader.get(id)
+    |> Reader.get(id, rev, revs)
     |> as_map
   end
 
   @doc """
-  Fetch a single uuid from CouchDB for use in a a subsequent create operation.
-  Clients can retrieve the returned List of UUIDs by getting the value for key
-  "uuids". The List contains only one element (UUID).
+  Retrieve the document with all revs given by database properties and id, returning it
+  as a Map.
   """
-  @spec fetch_uuid(Types.db_properties) :: {:ok, map} | {:error, String.t}
-  def fetch_uuid(db_props) do
+  @spec get(Types.db_properties, String.t, Boolean.t ) :: {:ok, map} | {:error, map}
+  def get(db_props, id, revs) do
     db_props
-    |> Reader.fetch_uuid()
+    |> Reader.get(id, nil, revs)
+    |> as_map
+  end
+
+  @doc """
+  Retrieve the document given by database properties and id, returning it
+  as a Map.
+  """
+  @spec get(Types.db_properties, String.t ) :: {:ok, map} | {:error, map}
+  def get(db_props, id) do
+    db_props
+    |> Reader.get(id)
     |> as_map
   end
 
