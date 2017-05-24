@@ -15,35 +15,41 @@ defmodule Couchdb.Connector do
   alias Couchdb.Connector.Writer
 
   @doc """
-  Retrieve the document with all revs given by database properties, id, and specific rev, returning it
+  Retrieve the document given by database properties and id, returning it
   as a Map.
+  """
+  @spec get(Types.db_properties, String.t ) :: {:ok, map} | {:error, map}
+  def get(db_props, id), do: get(db_props, id, nil, false)
+
+  @doc """
+  Retrieve the document and all its revisions given by database properties and id, returning it
+  as a Map.
+  """
+  @spec get(Types.db_properties, String.t, Boolean.t ) :: {:ok, map} | {:error, map}
+  def get(db_props, id, true), do: get(db_props, id, nil, true)
+
+  @doc """
+  Retrieve the document w/o its revisions given by database properties and id, returning it
+  as a Map.
+  """
+  @spec get(Types.db_properties, String.t, Boolean.t ) :: {:ok, map} | {:error, map}
+  def get(db_props, id, false), do: get(db_props, id)
+
+  @doc """
+  Retrieve the document w/o its revisions given by database properties, revision, and id, returning it
+  as a Map.
+  """
+  @spec get(Types.db_properties, String.t, String.t ) :: {:ok, map} | {:error, map}
+  def get(db_props, id, rev), do: get(db_props, id, rev, false)
+
+  @doc """
+  Retrieve the document at specific revision and all its revisions given by database properties, revistion, and id,
+  returning it as a Map.
   """
   @spec get(Types.db_properties, String.t, String.t, Boolean.t ) :: {:ok, map} | {:error, map}
   def get(db_props, id, rev, revs) do
     db_props
     |> Reader.get(id, rev, revs)
-    |> as_map
-  end
-
-  @doc """
-  Retrieve the document with all revs given by database properties and id, returning it
-  as a Map.
-  """
-  @spec get(Types.db_properties, String.t, Boolean.t ) :: {:ok, map} | {:error, map}
-  def get(db_props, id, revs) do
-    db_props
-    |> Reader.get(id, nil, revs)
-    |> as_map
-  end
-
-  @doc """
-  Retrieve the document given by database properties and id, returning it
-  as a Map.
-  """
-  @spec get(Types.db_properties, String.t ) :: {:ok, map} | {:error, map}
-  def get(db_props, id) do
-    db_props
-    |> Reader.get(id)
     |> as_map
   end
 
