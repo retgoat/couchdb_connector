@@ -54,6 +54,16 @@ defmodule Couchdb.Connector do
   end
 
   @doc """
+  retrieve all docs from given dtabase
+  """
+  @spec get_all(Types.db_properties) :: {:ok, map} | {:error, map}
+  def get_all(db_props) do
+    db_props
+    |> Reader.get_all_docs
+    |> as_map
+  end
+
+  @doc """
   Create a new document from given map with given id.
   Clients must make sure that the id has not been used for an existing document
   in CouchDB.
@@ -80,9 +90,13 @@ defmodule Couchdb.Connector do
   """
   @spec create_generate(Types.db_properties, map) :: {:ok, map} | {:error, map}
   def create_generate(db_props, doc_map) do
-    {:ok, uuid_json} = Reader.fetch_uuid(db_props)
-    uuid = hd(Poison.decode!(uuid_json)["uuids"])
-    create(db_props, doc_map, uuid)
+    case Reader.fetch_uuid(db_props) do
+      {:ok, uuid_json} ->
+        uuid = hd(Poison.decode!(uuid_json)["uuids"])
+        create(db_props, doc_map, uuid)
+      {:error, err} -> Poison.decode!(err)
+      r -> r
+    end
   end
 
   @doc """

@@ -58,6 +58,14 @@ defmodule Couchdb.Connector.UrlHelper do
   end
 
   @doc """
+  Produces the URL of all docs contained in given database
+  """
+  @spec all_docs_url(Types.db_properties) :: String.t
+  def all_docs_url(db_props) do
+    "#{database_server_url(db_props)}/#{db_props[:database]}/_all_docs"
+  end
+
+  @doc """
   Produces an URL that can be used to retrieve the given number of UUIDs from
   CouchDB. This endpoint does not require authentication.
   """
